@@ -1,59 +1,36 @@
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
-import { Observable, delay, finalize, of, tap } from 'rxjs';
-import { User } from '../../models/user.class';
-import { StorageService } from './storage.service';
+import { Observable, delay, finalize, of } from 'rxjs';
+import { IUser } from '../../models/user.interface';
+
 import { KEY_STORAGE } from '../../models/storage.enum';
+import { LocalStorageService } from './storage/local-storage.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly _storageService = inject(StorageService);
+  private readonly _storageService = inject(LocalStorageService);
+  private readonly _router = inject(Router);
 
-  $loading: WritableSignal<boolean> = signal(false);
-  $user: WritableSignal<User | null> = signal(null);
+  public $loading: WritableSignal<boolean> = signal(false);
 
-  login({
-    email,
-    password,
-    remember,
-  }: {
-    email: string;
-    password: string;
-    remember: boolean;
-  }): Observable<User> {
+  login(userData: IUser): Observable<IUser> {
     this.$loading.set(true);
-    const user: User = new User({
+    const user: IUser = {
       name: 'PrograMarc',
       email: 'programarcdev@gmail.com',
-      storageService: this._storageService,
-    });
+      favoriteGames: new Map([]),
+    };
+    this._storageService.setItem(KEY_STORAGE.DATA_USER, user);
     return of(user).pipe(
       delay(1000),
-      tap((user: User) => this.$user.set(user)),
       finalize(() => this.$loading.set(false))
     );
   }
-  logout(): Observable<void> {
-    return new Observable((observer) => {
-      this.$user.set(null);
-      this._storageService.remove(KEY_STORAGE.DATA_USER);
-      observer.next();
-      observer.complete();
-    });
-  }
 
-  getUserFromStorage(): Observable<void> {
-    return new Observable((observer) => {
-      const user: User | null = this._storageService.get(KEY_STORAGE.DATA_USER)
-        ? new User({
-            ...JSON.parse(this._storageService.get(KEY_STORAGE.DATA_USER)),
-            storageService: this._storageService,
-          })
-        : null;
-      this.$user.set(user);
-      observer.next();
-      observer.complete();
-    });
+  logout(): void {
+    this._storageService.removeItem(KEY_STORAGE.DATA_USER);
+    this._router.navigateByUrl('/');
   }
 }

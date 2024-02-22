@@ -1,27 +1,39 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, WritableSignal, signal } from '@angular/core';
+import {
+  Injectable,
+  Signal,
+  WritableSignal,
+  inject,
+  signal,
+} from '@angular/core';
 import { Observable, finalize, map, of, tap } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
-import { IGenre } from '../../../core/models/game.interface';
-import { IGenresResult } from '../../../core/models/genre.interface';
+import { IGenre } from '@models/game.interface';
+import { IGenresResult } from '@models/genre.interface';
+import { URL_GENRES } from 'core/constants/urls-api.constant';
 
 @Injectable({ providedIn: 'root' })
 export class GenreService {
-  public $genres: WritableSignal<IGenre[]> = signal([]);
+  private readonly _http = inject(HttpClient);
+
+  private readonly _$genres: WritableSignal<IGenre[]> = signal([]);
   public $loading: WritableSignal<boolean> = signal(false);
-  constructor(private httpClient: HttpClient) {}
+
+  getGenresList(): Signal<IGenre[]> {
+    return this._$genres.asReadonly();
+  }
+
   getGenres(): Observable<IGenre[]> {
     this.$loading.set(true);
-    if (this.$genres().length > 0) {
+
+    if (this._$genres()) {
       this.$loading.set(false);
-      return of(this.$genres());
+      return of(this._$genres());
     }
-    return this.httpClient
-      .get<IGenresResult>(`${environment.RAWG_API_KEY}genres`)
-      .pipe(
-        tap((result) => this.$genres.set(result.results)),
-        map((result) => result.results),
-        finalize(() => this.$loading.set(false))
-      );
+
+    return this._http.get<IGenresResult>(URL_GENRES).pipe(
+      tap((result) => this._$genres.set(result.results)),
+      map((result) => result.results),
+      finalize(() => this.$loading.set(false))
+    );
   }
 }
