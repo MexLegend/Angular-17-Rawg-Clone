@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { IUser } from '@models/user.interface';
 import { AuthService } from '@coreServices/common/auth.service';
@@ -38,6 +38,7 @@ export class TopBarComponent implements OnInit {
   private readonly _destroy$ = inject(AutoDestroyService);
   private readonly _authService = inject(AuthService);
   private readonly _userService = inject(UserService);
+  private readonly _router = inject(Router);
 
   $user: Signal<IUser | null> = this._userService.getUserData();
   query: string = '';
@@ -60,6 +61,10 @@ export class TopBarComponent implements OnInit {
   }
 
   logout(): void {
-    this._authService.logout();
+    this._authService.logout().subscribe({
+      next: () => {
+        this._router.navigateByUrl('/');
+      },
+    });
   }
 }

@@ -4,10 +4,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { IAbstractGamesPageParams } from '@models/abstract-games-page-params.interface';
 import { ISearchFilters } from '@models/search-filters.interface';
-import { AutoDestroyService } from '../../../../core/services/utils/auto-destroy.service';
-import { AbstractGamesPageComponent } from '../../../../shared/abstract-games-page/abstract-games-page.component';
-import { GameListComponent } from '../../../../shared/game-list/game-list.component';
-import { SpinnerComponent } from '../../../../shared/spinner/spinner.component';
+import { AutoDestroyService } from '@coreServices/utils/auto-destroy.service';
+import { AbstractGamesPageComponent } from '@shared/abstract-games-page/abstract-games-page.component';
+import { GameListComponent } from '@shared/game-list/game-list.component';
+import { SpinnerComponent } from '@shared/spinner/spinner.component';
 
 @Component({
   selector: 'app-games-page',

@@ -19,19 +19,20 @@ import {
   Subject,
   exhaustMap,
   switchMap,
-  take,
   takeUntil,
   tap,
 } from 'rxjs';
 import { IAbstractGamesPageParams } from '@models/abstract-games-page-params.interface';
 import { IGame, IGenre, ISearchResult } from '@models/game.interface';
-import { ISearchFilters } from '@models/search-filters.interface';
+import {
+  ISearchFilters,
+  ISearchFiltersForm,
+} from '@models/search-filters.interface';
 import { GameSearchService } from '../../core/services/common/game-search.service';
 import { AutoDestroyService } from '../../core/services/utils/auto-destroy.service';
 import { GenreService } from '../../routes/games-page/services/genre.service';
 import { GameListComponent } from '../game-list/game-list.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
-
 @Component({
   selector: 'app-abstract-games-page',
   standalone: true,
@@ -61,7 +62,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
   $loading: Signal<boolean> = this._gamesSearchService.$loading;
   filters$!: BehaviorSubject<ISearchFilters>;
   scrolled$: Subject<void> = new Subject<void>();
-  form?: FormGroup;
+  form?: FormGroup<ISearchFiltersForm>;
   defaultSearchFilters: ISearchFilters = {
     search: '',
     page_size: 25,
@@ -86,23 +87,23 @@ export abstract class AbstractGamesPageComponent implements OnInit {
   }
 
   initForm(): void {
-    this.form = this._fb.group({
-      order: [this.defaultSearchFilters.ordering],
-      genres: [this.defaultSearchFilters.genres],
+    this.form = this._fb.group<ISearchFiltersForm>({
+      order: this._fb.control(this.defaultSearchFilters.ordering),
+      genres: this._fb.control(this.defaultSearchFilters.genres),
     });
     this.subscribeToFormChanges();
   }
 
   subscribeToFormChanges(): void {
-    this.form!.valueChanges.pipe(takeUntil(this._destroy$)).subscribe(() => {
-      const ordering = this.form!.controls['order'].value;
-      const genres = this.form!.controls['genres'].value;
-      this.filters$.next({
-        ...this.filters$.getValue(),
-        ordering,
-        genres,
-      });
-    });
+    this.form!.valueChanges.pipe(takeUntil(this._destroy$)).subscribe(
+      ({ order, genres }) => {
+        this.filters$.next({
+          ...this.filters$.getValue(),
+          genres,
+          ordering: order,
+        });
+      }
+    );
   }
 
   subscribeToFiltersChange(): void {

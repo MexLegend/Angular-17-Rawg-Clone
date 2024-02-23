@@ -13,13 +13,13 @@
   </div>
   @if(componentParams.showFilters){
   <form [formGroup]="form!" class="flex gap-5">
-    <div>
-      <label for="small" class="block mb-2 text-sm font-medium text-white"
-        >Order by</label
-      >
+    <div class="flex gap-2 items-center justify-center">
+      <label for="orderBy" class="flex w-max text-sm font-medium text-white whitespace-nowrap">
+        Order by
+      </label>
       <select
-        id="small"
-        class="block w-full p-2 text-sm text-white rounded-lg bg-[#202020] outline-none"
+        id="orderBy"
+        class="flex w-full p-2 text-sm text-white rounded-lg bg-[#202020] outline-none"
         formControlName="order"
       >
         <option value="-relevance">Relevance</option>
@@ -30,13 +30,13 @@
         <option value="-rating">Average rating</option>
       </select>
     </div>
-    <div>
-      <label for="small" class="block mb-2 text-sm font-medium text-white"
-        >Genres</label
-      >
+    <div class="flex gap-2 items-center justify-center">
+      <label for="genres" class="flex w-max text-sm font-medium text-white">
+        Genres
+      </label>
       <select
-        id="small"
-        class="block w-full p-2 text-sm text-white rounded-lg bg-[#202020] outline-none"
+        id="genres"
+        class="flex flex-1 p-2 text-sm text-white rounded-lg bg-[#202020] outline-none"
         formControlName="genres"
       >
         <option value="">All</option>
@@ -47,10 +47,10 @@
     </div>
   </form>
   }
-  <app-game-list [games]="$games()"> </app-game-list>
+  <app-game-list [games]="$games()" />
   @if($loading()) {
   <div class="flex items-center justify-center">
-    <app-spinner></app-spinner>
+    <app-spinner />
   </div>
   }
 </div>

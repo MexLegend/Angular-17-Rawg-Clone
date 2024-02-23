@@ -1,7 +1,7 @@
 <section class="flex items-center justify-center h-[500px]">
   <form
     [formGroup]="form"
-    (ngSubmit)="submitClicked$.next()"
+    (ngSubmit)="handleSubmit()"
     class="flex flex-col items-center gap-5 justify-center"
   >
     <h1 class="text-5xl md:text-7xl text-white font-bold">Log in</h1>
@@ -30,7 +30,7 @@
         <input
           type="email"
           autocomplete="off"
-          id="default-search"
+          id="email"
           class="block w-full p-3 ps-10 text-sm outline-none text-white bg-[#3b3b3b]"
           placeholder="Email"
           formControlName="email"
@@ -71,7 +71,7 @@
         <input
           type="password"
           autocomplete="off"
-          id="default-search"
+          id="password"
           class="block w-full p-3 ps-10 text-sm outline-none text-white bg-[#3b3b3b]"
           placeholder="Password"
           formControlName="password"

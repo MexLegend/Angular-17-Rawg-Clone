@@ -1,3 +1,5 @@
+import { FormControl } from '@angular/forms';
+
 export interface ISearchFilters {
   search?: string;
   page_size?: number;
@@ -6,4 +8,9 @@ export interface ISearchFilters {
   platform?: string;
   genres?: string;
   updated?: string;
+}
+
+export interface ISearchFiltersForm {
+  order: FormControl<string | undefined>;
+  genres: FormControl<string | undefined>;
 }

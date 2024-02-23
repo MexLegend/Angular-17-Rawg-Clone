@@ -14,7 +14,7 @@ export interface IGame {
   background_image: string;
   rating: number;
   rating_top: number;
-  ratings: Rating[];
+  ratings: IRating[];
   ratings_count: number;
   reviews_text_count: number;
   added: number;
@@ -27,7 +27,7 @@ export interface IGame {
   reviews_count: number;
   saturated_color: string;
   dominant_color: string;
-  platforms: Platform[];
+  platforms: IPlatform[];
   parent_platforms: IParentPlatform[];
   genres: IGenre[];
   stores: IStore[];
@@ -37,7 +37,7 @@ export interface IGame {
   short_screenshots?: IShortScreenshot[];
 }
 
-export interface Rating {
+export interface IRating {
   id: number;
   title: string;
   count: number;
@@ -53,7 +53,7 @@ export interface IAddedByStatus {
   playing: number;
 }
 
-export interface Platform {
+export interface IPlatform {
   platform: IPlatform2;
   released_at: string;
   requirements_en?: IRequirementsEn;

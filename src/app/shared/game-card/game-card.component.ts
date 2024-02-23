@@ -20,8 +20,9 @@ export class GameCardComponent {
   $user: Signal<IUser | null> = this._userService.getUserData();
   $favorite: Signal<boolean> = computed(() => {
     const userData = this._userService.getUserData();
-    const favoriteGames = userData()?.favoriteGames ?? new Set();
-    return favoriteGames.has(this.game.id);
+    const favoriteGames = userData()?.favoriteGames ?? [];
+
+    return favoriteGames.includes(this.game.id);
   });
 
   tooggleFavorite(): void {

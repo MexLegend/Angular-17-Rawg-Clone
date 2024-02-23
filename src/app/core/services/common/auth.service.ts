@@ -1,36 +1,43 @@
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
-import { Observable, delay, finalize, of } from 'rxjs';
-import { IUser } from '../../models/user.interface';
+import { Observable, delay, finalize, of, tap } from 'rxjs';
+import { ILoginData, IUser } from '../../models/user.interface';
 
 import { KEY_STORAGE } from '../../models/storage.enum';
 import { LocalStorageService } from './storage/local-storage.service';
-import { Router } from '@angular/router';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly _storageService = inject(LocalStorageService);
-  private readonly _router = inject(Router);
+  private readonly _userService = inject(UserService);
 
   public $loading: WritableSignal<boolean> = signal(false);
 
-  login(userData: IUser): Observable<IUser> {
+  login(loginData: ILoginData): Observable<IUser> {
     this.$loading.set(true);
+
     const user: IUser = {
       name: 'PrograMarc',
-      email: 'programarcdev@gmail.com',
-      favoriteGames: new Map([]),
+      email: loginData.email,
+      favoriteGames: [],
     };
-    this._storageService.setItem(KEY_STORAGE.DATA_USER, user);
+
     return of(user).pipe(
       delay(1000),
-      finalize(() => this.$loading.set(false))
+      finalize(() => {
+        this.$loading.set(false)
+      })
     );
   }
 
-  logout(): void {
-    this._storageService.removeItem(KEY_STORAGE.DATA_USER);
-    this._router.navigateByUrl('/');
+  logout(): Observable<void> {
+    return new Observable((observer) => {
+      this._storageService.removeItem(KEY_STORAGE.DATA_USER);
+      this._userService.setUserData(null);
+      observer.next();
+      observer.complete();
+    });
   }
 }

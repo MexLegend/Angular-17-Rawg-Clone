@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Observable, finalize, map, of, tap } from 'rxjs';
+import { Observable, finalize, map, of } from 'rxjs';
 import { IGenre } from '@models/game.interface';
 import { IGenresResult } from '@models/genre.interface';
 import { URL_GENRES } from 'core/constants/urls-api.constant';
@@ -25,14 +25,17 @@ export class GenreService {
   getGenres(): Observable<IGenre[]> {
     this.$loading.set(true);
 
-    if (this._$genres()) {
+    if (this._$genres().length) {
       this.$loading.set(false);
       return of(this._$genres());
     }
 
     return this._http.get<IGenresResult>(URL_GENRES).pipe(
-      tap((result) => this._$genres.set(result.results)),
-      map((result) => result.results),
+      map((result) => {
+        const genres = result.results;
+        this._$genres.set(genres);
+        return genres;
+      }),
       finalize(() => this.$loading.set(false))
     );
   }

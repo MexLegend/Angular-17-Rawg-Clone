@@ -8,8 +8,8 @@ export const unloggedGuard: CanActivateFn = (route, state) => {
 
   const userData = userService.getUserData();
 
-  if (!userData()) {
-    return router.parseUrl('/auth');
+  if (userData()) {
+    return router.parseUrl('/user');
   } else {
     return true;
   }

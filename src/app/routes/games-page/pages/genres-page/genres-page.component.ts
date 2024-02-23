@@ -22,4 +22,5 @@ export class GenresPageComponent {
 
   $loading: Signal<boolean> = this._genreService.$loading;
   $genres: Signal<IGenre[]> = this._genreService.getGenresList();
+
 }

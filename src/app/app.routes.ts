@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
-import { GAME_LIST_ROUTES } from './routes/games-page/game-list.routes';
 import { loggedGuard } from './core/guards/logged.guard';
-import { USER_ROUTES } from './routes/user/user.routes';
 
 export const routes: Routes = [
   {
@@ -13,12 +11,16 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => GAME_LIST_ROUTES,
+        loadChildren: () =>
+          import('./routes/games-page/game-list.routes').then(
+            (r) => r.GAME_LIST_ROUTES
+          ),
       },
       {
         path: 'user',
         canActivate: [loggedGuard],
-        loadChildren: () => USER_ROUTES,
+        loadChildren: () =>
+          import('./routes/user/user.routes').then((r) => r.USER_ROUTES),
       },
     ],
   },

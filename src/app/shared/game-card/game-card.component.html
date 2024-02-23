@@ -4,7 +4,8 @@
   >
     <img
       class="w-full h-40 rounded-lg object-cover"
-      [src]="game.short_screenshots?.[0]?.image"
+      [src]="game.background_image"
+      loading="lazy"
       alt="{{ game.name }}"
     />
 

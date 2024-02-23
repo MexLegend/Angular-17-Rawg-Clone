@@ -15,14 +15,10 @@ import { IUser } from '@models/user.interface';
 })
 export class UserService {
   private readonly _storageService = inject(LocalStorageService);
-
   private readonly _$user: WritableSignal<IUser | null> = signal(null);
 
-  constructor() {
-    const userFromStorage = this._storageService.getItem<IUser>(
-      KEY_STORAGE.DATA_USER
-    );
-    if (userFromStorage) this._$user.set(userFromStorage);
+  setUserData(userData: IUser | null): void {
+    this._$user.set(userData);
   }
 
   getUserData(): Signal<IUser | null> {
@@ -30,11 +26,13 @@ export class UserService {
   }
 
   toogleGame(game: IGame) {
-    const newFavoriteGames = { ...this._$user()!.favoriteGames };
-    if (newFavoriteGames.has(game.id)) {
-      newFavoriteGames.delete(game.id);
+    const newFavoriteGames = [...this._$user()!.favoriteGames];
+    const index = newFavoriteGames.indexOf(game.id);
+
+    if (index > -1) {
+      newFavoriteGames.splice(index, 1);
     } else {
-      newFavoriteGames.set(game.id, game);
+      newFavoriteGames.push(game.id);
     }
 
     this._$user.update((value) => ({
@@ -43,6 +41,17 @@ export class UserService {
     }));
 
     this.updateStorage(this._$user()!);
+  }
+
+  loadUserFromStorage() {
+    const userFromStorage = this._storageService.getItem<IUser>(
+      KEY_STORAGE.DATA_USER
+    );
+    if (userFromStorage) {
+      this._$user.set(userFromStorage);
+    }
+
+    return userFromStorage;
   }
 
   updateStorage(userData: IUser): void {

@@ -1,3 +1,5 @@
+import { IAddedByStatus, IPlatform, IRating } from "./game.interface";
+
 export interface IGameDetails {
   id: number;
   slug: string;
@@ -14,7 +16,7 @@ export interface IGameDetails {
   website: string;
   rating: number;
   rating_top: number;
-  ratings: IRatings;
+  ratings: IRating[];
   reactions: IReactions;
   added: number;
   added_by_status: IAddedByStatus;
@@ -31,7 +33,7 @@ export interface IGameDetails {
   reddit_count: number;
   twitch_count: string;
   youtube_count: string;
-  reviews_text_count: string;
+  reviews_text_count: number;
   ratings_count: number;
   suggestions_count: number;
   alternative_names: string[];
@@ -48,22 +50,12 @@ export interface IMetacriticPlatform {
   url: string;
 }
 
-export interface IRatings {}
-
 export interface IReactions {}
-
-export interface IAddedByStatus {}
 
 export interface IEsrbRating {
   id: number;
   slug: string;
   name: string;
-}
-
-export interface IPlatform {
-  platform: IPlatform2;
-  released_at: string;
-  requirements: IRequirements;
 }
 
 export interface IPlatform2 {
